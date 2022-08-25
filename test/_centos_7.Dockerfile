@@ -1,4 +1,5 @@
 FROM centos:7
+RUN yum install -y dialog git python3
 
 ENV GITDIR /etc/.pihole
 ENV SCRIPTDIR /opt/pihole
@@ -8,10 +9,11 @@ ADD . $GITDIR
 RUN cp $GITDIR/advanced/Scripts/*.sh $GITDIR/gravity.sh $GITDIR/pihole $GITDIR/automated\ install/*.sh $SCRIPTDIR/
 ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SCRIPTDIR
 
+ADD test/centos7.epel.override /etc/yum/pluginconf.d/fastestmirror.conf
 RUN true && \
     chmod +x $SCRIPTDIR/*
 
-ENV PH_TEST true
+ENV SKIP_INSTALL true
 ENV OS_CHECK_DOMAIN_NAME dev-supportedos.pi-hole.net
 
 #sed '/# Start the installer/Q' /opt/pihole/basic-install.sh > /opt/pihole/stub_basic-install.sh && \
